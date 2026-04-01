@@ -1,0 +1,2 @@
+-- Não precisa mais! Use o botão "Criar tamanhos S, M, L, XL..." 
+-- dentro da pasta Camisa no admin (Produtos > Camisa).

@@ -1,0 +1,15 @@
+[project]
+name = "favelastore"
+
+[api]
+enabled = true
+port = 54321
+
+[db]
+port = 54322
+
+[storage]
+enabled = true
+
+[auth]
+enabled = true
