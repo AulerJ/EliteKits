@@ -27,10 +27,9 @@ export async function fetchVisibleListingPriceMap(
     .eq("store_slug", storeSlug)
     .eq("visible", true);
   if (error) {
-    if (process.env.NODE_ENV === "development") {
-      // eslint-disable-next-line no-console
-      console.warn("[store-listings] fetchVisibleListingPriceMap:", error.message);
-    }
+    // Sempre logar: em produção ajuda a diagnosticar catálogo vazio na Vercel (RLS, schema, chaves).
+    // eslint-disable-next-line no-console
+    console.error("[store-listings] fetchVisibleListingPriceMap:", error.message, error);
     return map;
   }
   for (const row of data ?? []) {

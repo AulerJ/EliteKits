@@ -80,7 +80,14 @@ export default async function EliteKitsListingsAdminPage({ searchParams }: PageP
           </li>
           <li>
             No deploy da Vercel, defina <code className="rounded bg-white px-1">NEXT_PUBLIC_STORE_SLUG=elite_kits</code>.
-            Sem isso, o site não filtra como vitrine secundária.
+            Sem isso, o site não filtra como vitrine secundária. Depois de criar ou alterar variáveis{" "}
+            <code className="rounded bg-white px-1">NEXT_PUBLIC_*</code>, faça um <strong>Redeploy</strong> — elas entram
+            no build.
+          </li>
+          <li>
+            A <strong>home</strong> não lista todos os produtos: mostra categorias, destaques (configurados no admin) e
+            alguns recentes. Para ver o item no catálogo, abra a <strong>categoria</strong> em que ele está (menu ou{" "}
+            <code className="rounded bg-white px-1">/catalogo/...</code>) ou use a busca do site.
           </li>
         </ol>
       </div>
