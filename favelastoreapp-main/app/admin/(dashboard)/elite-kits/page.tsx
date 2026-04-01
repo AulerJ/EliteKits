@@ -71,6 +71,19 @@ export default async function EliteKitsListingsAdminPage({ searchParams }: PageP
         ). Deixe o preço em branco para usar o preço base do produto no banco; ou defina um
         preço só para este site.
       </p>
+      <div className="mt-4 rounded-xl border border-green-200 bg-green-50/90 p-4 text-sm text-green-900">
+        <p className="font-semibold">Para o produto aparecer no site EliteKits</p>
+        <ol className="mt-2 list-decimal space-y-1 pl-5">
+          <li>
+            Marque <strong>Na vitrine</strong> e clique em <strong>Salvar</strong>. Sem o checkbox, o produto fica
+            oculto na vitrine (mesmo após salvar).
+          </li>
+          <li>
+            No deploy da Vercel, defina <code className="rounded bg-white px-1">NEXT_PUBLIC_STORE_SLUG=elite_kits</code>.
+            Sem isso, o site não filtra como vitrine secundária.
+          </li>
+        </ol>
+      </div>
       <p className="mt-2 text-xs text-amber-800">
         Se você tinha listagens antigas com <code className="rounded bg-amber-100 px-1">soccer_lover</code>, rode no
         Supabase o SQL da migration{" "}
@@ -142,14 +155,15 @@ export default async function EliteKitsListingsAdminPage({ searchParams }: PageP
               </div>
               <form action={saveEliteKitsStoreListing} className="flex flex-wrap items-end gap-3">
                 <input type="hidden" name="productId" value={p.id as string} />
-                <label className="flex cursor-pointer items-center gap-2 text-sm text-zinc-700">
+                <label className="flex cursor-pointer items-center gap-2 text-sm font-medium text-zinc-800">
                   <input
                     type="checkbox"
                     name="visible"
+                    value="on"
                     defaultChecked={visible}
-                    className="h-4 w-4 rounded border-zinc-300"
+                    className="h-4 w-4 rounded border-zinc-300 text-green-600 focus:ring-green-500"
                   />
-                  Na vitrine
+                  Na vitrine (obrigatório para publicar)
                 </label>
                 <div>
                   <label className="block text-xs font-medium text-zinc-600">Preço US$ (opcional)</label>

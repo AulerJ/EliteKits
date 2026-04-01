@@ -46,6 +46,6 @@ export async function saveEliteKitsStoreListing(formData: FormData) {
   }
 
   revalidatePath("/admin/elite-kits");
-  revalidatePath("/");
-  revalidatePath("/catalogo");
+  revalidatePath("/", "layout");
+  revalidatePath("/catalogo", "layout");
 }
