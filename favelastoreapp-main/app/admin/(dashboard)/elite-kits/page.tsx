@@ -4,6 +4,7 @@ import { createClient, createServiceRoleClient } from "@/lib/supabase/server";
 import { STORE_SLUG_ELITE_KITS } from "@/lib/store";
 import { siteDisplayName } from "@/lib/site-brand";
 import { getEliteKitsCatalogDiagnostics } from "@/lib/elite-kits-diagnostics";
+import { normalizeListingProductId } from "@/lib/store-listings";
 import { saveEliteKitsStoreListing } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -60,7 +61,7 @@ export default async function EliteKitsListingsAdminPage({ searchParams }: PageP
 
   const listingByProduct = new Map(
     (listings ?? []).map((row) => [
-      row.product_id as string,
+      normalizeListingProductId(row.product_id as string),
       {
         visible: row.visible as boolean,
         price_override: row.price_override as number | null,
@@ -74,7 +75,7 @@ export default async function EliteKitsListingsAdminPage({ searchParams }: PageP
       | null;
     const first = imgs?.[0];
     const thumb = imageThumb(first?.url, first?.storage_path);
-    const listing = listingByProduct.get(p.id as string);
+    const listing = listingByProduct.get(normalizeListingProductId(p.id as string));
     const visible = listing?.visible ?? false;
     const overrideVal =
       listing?.price_override != null ? String(listing.price_override) : "";
