@@ -28,23 +28,36 @@ export async function saveEliteKitsStoreListing(formData: FormData) {
     }
   }
 
-  // Service role evita falhas de RLS/sessão no upsert; ainda exige usuário logado acima.
-  const db = createServiceRoleClient() ?? supabase;
-  const { error } = await db
-    .schema("favelastore")
-    .from("product_store_listings")
-    .upsert(
-      {
-        product_id: productId,
-        store_slug: STORE_SLUG_ELITE_KITS,
-        visible,
-        price_override: priceOverride,
-      },
-      { onConflict: "product_id,store_slug" }
-    );
-
-  if (error) {
-    throw new Error(error.message);
+  // Tenta service role primeiro; se estiver inválida/no projeto errado, faz fallback para sessão autenticada.
+  const payload = {
+    product_id: productId,
+    store_slug: STORE_SLUG_ELITE_KITS,
+    visible,
+    price_override: priceOverride,
+  };
+  const dbService = createServiceRoleClient();
+  let saveError: { message: string; code?: string } | null = null;
+  if (dbService) {
+    const { error } = await dbService
+      .schema("favelastore")
+      .from("product_store_listings")
+      .upsert(payload, { onConflict: "product_id,store_slug" });
+    if (!error) {
+      saveError = null;
+    } else {
+      saveError = { message: error.message, code: error.code };
+      // eslint-disable-next-line no-console
+      console.warn("[saveEliteKitsStoreListing] service-role upsert failed, fallback to auth:", error.message, error.code);
+    }
+  }
+  if (saveError || !dbService) {
+    const { error } = await supabase
+      .schema("favelastore")
+      .from("product_store_listings")
+      .upsert(payload, { onConflict: "product_id,store_slug" });
+    if (error) {
+      throw new Error(error.message);
+    }
   }
 
   // Next.js 16 pode lançar em revalidatePath com tipo "layout"/"page" em rotas dinâmicas — não quebrar o save.

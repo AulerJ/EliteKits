@@ -8,9 +8,9 @@ import {
   listingMapHas,
 } from "@/lib/store-listings";
 
-/** Leituras de listagem (vitrine secundária): service role se existir; senão anon + RLS. */
+/** Leituras de listagem no catálogo público: prioriza anon para evitar falha por service key inválida. */
 function catalogSupabaseForListings() {
-  return createServiceRoleClient() ?? createPublicClient();
+  return createPublicClient() ?? createServiceRoleClient();
 }
 
 const HERO_IMAGES_KEY = "hero_images";

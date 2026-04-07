@@ -7,7 +7,7 @@ import {
 
 /** Mesmo cliente usado no catálogo público (`queries.catalogSupabaseForListings`). */
 function catalogClientLikePublicSite() {
-  return createServiceRoleClient() ?? createPublicClient();
+  return createPublicClient() ?? createServiceRoleClient();
 }
 
 export type EliteKitsCatalogDiagnostics = {
