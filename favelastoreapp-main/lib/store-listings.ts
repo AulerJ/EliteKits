@@ -37,31 +37,39 @@ export async function fetchVisibleListingPriceMap(
   storeSlug: string
 ): Promise<ListingFetchResult> {
   const map = new Map<string, ListingPriceEntry>();
-  const { data, error } = await supabase
-    .schema("favelastore")
-    .from("product_store_listings")
-    .select("product_id, price_override")
-    .eq("store_slug", storeSlug)
-    .eq("visible", true);
-  if (error) {
-    const err: ListingFetchError = {
-      message: error.message,
-      code: error.code,
-      details: error.details,
-      hint: error.hint,
-    };
+  try {
+    const { data, error } = await supabase
+      .schema("favelastore")
+      .from("product_store_listings")
+      .select("product_id, price_override")
+      .eq("store_slug", storeSlug)
+      .eq("visible", true);
+    if (error) {
+      const err: ListingFetchError = {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+      };
+      // eslint-disable-next-line no-console
+      console.error("[store-listings] fetchVisibleListingPriceMap:", error.message, error);
+      return { map, error: err };
+    }
+    for (const row of data ?? []) {
+      const pid = normalizeListingProductId(row.product_id as string);
+      const po = row.price_override;
+      map.set(pid, {
+        priceOverride: po != null && po !== "" ? Number(po) : null,
+      });
+    }
+    return { map, error: null };
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e);
+    const err: ListingFetchError = { message: `Exceção na query: ${message}` };
     // eslint-disable-next-line no-console
-    console.error("[store-listings] fetchVisibleListingPriceMap:", error.message, error);
+    console.error("[store-listings] fetchVisibleListingPriceMap exception:", e);
     return { map, error: err };
   }
-  for (const row of data ?? []) {
-    const pid = normalizeListingProductId(row.product_id as string);
-    const po = row.price_override;
-    map.set(pid, {
-      priceOverride: po != null && po !== "" ? Number(po) : null,
-    });
-  }
-  return { map, error: null };
 }
 
 export function applyListingPrice<T extends { id: string; price?: number | null }>(

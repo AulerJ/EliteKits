@@ -47,11 +47,15 @@ export async function saveEliteKitsStoreListing(formData: FormData) {
     throw new Error(error.message);
   }
 
-  revalidatePath("/admin/elite-kits");
-  revalidatePath("/", "layout");
-  revalidatePath("/", "page");
-  revalidatePath("/catalogo", "layout");
-  revalidatePath("/catalogo", "page");
-  revalidatePath("/busca");
-  revalidatePath("/produto", "layout");
+  // Next.js 16 pode lançar em revalidatePath com tipo "layout"/"page" em rotas dinâmicas — não quebrar o save.
+  try {
+    revalidatePath("/admin/elite-kits");
+    revalidatePath("/", "layout");
+    revalidatePath("/catalogo");
+    revalidatePath("/busca");
+    revalidatePath("/produto");
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error("[saveEliteKitsStoreListing] revalidatePath:", e);
+  }
 }

@@ -48,6 +48,31 @@ function formatErrorLine(e: ListingFetchError): string {
 }
 
 export async function getEliteKitsCatalogDiagnostics(): Promise<EliteKitsCatalogDiagnostics> {
+  try {
+    return await runEliteKitsCatalogDiagnostics();
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e);
+    const slugFromBuild = getPublicStoreSlug();
+    // eslint-disable-next-line no-console
+    console.error("[elite-kits-diagnostics]", e);
+    return {
+      slugFromBuild,
+      expectedSlug: STORE_SLUG_ELITE_KITS,
+      buildHasNoStoreSlug: slugFromBuild == null,
+      slugMismatch: slugFromBuild != null && slugFromBuild !== STORE_SLUG_ELITE_KITS,
+      hasSupabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+      hasAnonKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      hasServiceRoleKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+      catalogClientOk: false,
+      visibleListingCount: 0,
+      catalogFetchError: { message: `Falha ao montar diagnóstico: ${message}` },
+      anonOnly: { ok: false, visibleListingCount: 0, error: null },
+      summaryMessage: `[Diagnóstico EliteKits — exceção]\n${message}`,
+    };
+  }
+}
+
+async function runEliteKitsCatalogDiagnostics(): Promise<EliteKitsCatalogDiagnostics> {
   const slugFromBuild = getPublicStoreSlug();
   const hasSupabaseUrl = !!process.env.NEXT_PUBLIC_SUPABASE_URL;
   const hasAnonKey = !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -132,3 +157,4 @@ export async function getEliteKitsCatalogDiagnostics(): Promise<EliteKitsCatalog
     summaryMessage: lines.join("\n"),
   };
 }
+
