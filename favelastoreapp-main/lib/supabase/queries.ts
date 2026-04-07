@@ -4,6 +4,8 @@ import {
   activeSecondaryStoreSlug,
   fetchVisibleListingPriceMap,
   filterAndApplyListingPrices,
+  getListingPriceEntry,
+  listingMapHas,
 } from "@/lib/store-listings";
 
 /** Leituras de listagem (vitrine secundária): service role se existir; senão anon + RLS. */
@@ -447,7 +449,7 @@ export async function getProductsByCategory(
       if (!listingClient) {
         productList = [];
       } else {
-        const map = await fetchVisibleListingPriceMap(listingClient, storeSlug);
+        const { map } = await fetchVisibleListingPriceMap(listingClient, storeSlug);
         productList = filterAndApplyListingPrices(
           productList as { id: string; price?: number | null }[],
           map
@@ -560,8 +562,8 @@ export async function getHomeProductsByIds(
     let idList = [...ids];
     let listingMap = new Map<string, { priceOverride: number | null }>();
     if (storeSlug) {
-      listingMap = await fetchVisibleListingPriceMap(supabase, storeSlug);
-      idList = idList.filter((id) => listingMap.has(id));
+      listingMap = (await fetchVisibleListingPriceMap(supabase, storeSlug)).map;
+      idList = idList.filter((id) => listingMapHas(listingMap, id));
       if (idList.length === 0) return [];
     }
 
@@ -592,7 +594,7 @@ export async function getHomeProductsByIds(
 
     if (storeSlug && listingMap.size > 0) {
       for (const p of mapped) {
-        const e = listingMap.get(p.id);
+        const e = getListingPriceEntry(listingMap, p.id);
         if (e && e.priceOverride != null) {
           p.price = e.priceOverride;
         }
@@ -622,7 +624,7 @@ export async function getHomeLatestProducts(
     let rows: any[] = [];
 
     if (storeSlug) {
-      listingMap = await fetchVisibleListingPriceMap(supabase, storeSlug);
+      listingMap = (await fetchVisibleListingPriceMap(supabase, storeSlug)).map;
       const allowedIds = [...listingMap.keys()];
       if (allowedIds.length === 0) return [];
       const maxIn = 1000;
@@ -663,7 +665,7 @@ export async function getHomeLatestProducts(
       if (exclude.has(product.id)) continue;
       let price = (product.price as number | null | undefined) ?? null;
       if (listingMap) {
-        const e = listingMap.get(product.id as string);
+        const e = getListingPriceEntry(listingMap, product.id as string);
         if (e?.priceOverride != null) price = e.priceOverride;
       }
       products.push({
@@ -801,10 +803,10 @@ export async function getSearchProducts(q: string): Promise<SearchProduct[]> {
     if (storeSlugSearch) {
       const lc = catalogSupabaseForListings();
       if (!lc) return [];
-      const map = await fetchVisibleListingPriceMap(lc, storeSlugSearch);
-      list = list.filter((p) => map.has(p.id));
+      const { map } = await fetchVisibleListingPriceMap(lc, storeSlugSearch);
+      list = list.filter((p) => listingMapHas(map, p.id));
       for (const p of list) {
-        const e = map.get(p.id);
+        const e = getListingPriceEntry(map, p.id);
         if (e?.priceOverride != null) p.price = e.priceOverride;
       }
     }
@@ -861,9 +863,9 @@ export async function getProductById(id: string) {
     if (storeSlugProduct) {
       const lc = catalogSupabaseForListings();
       if (!lc) return null;
-      const map = await fetchVisibleListingPriceMap(lc, storeSlugProduct);
-      if (!map.has(row.id as string)) return null;
-      const e = map.get(row.id as string);
+      const { map } = await fetchVisibleListingPriceMap(lc, storeSlugProduct);
+      if (!listingMapHas(map, row.id as string)) return null;
+      const e = getListingPriceEntry(map, row.id as string);
       if (e?.priceOverride != null) row.price = e.priceOverride;
     }
     const imagesRaw = (row.product_images as { url?: string | null; storage_path?: string; sort_order?: number }[] | null) ?? [];
@@ -922,7 +924,7 @@ export async function getOtherProductsInCategory(
       .limit(fetchLimit);
     let rows = (data ?? []) as any[];
     if (storeSlug) {
-      const map = await fetchVisibleListingPriceMap(supabase, storeSlug);
+      const { map } = await fetchVisibleListingPriceMap(supabase, storeSlug);
       rows = filterAndApplyListingPrices(
         rows as { id: string; price?: number | null }[],
         map

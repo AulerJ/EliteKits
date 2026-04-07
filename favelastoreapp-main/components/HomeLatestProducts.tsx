@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { HomeProductCard } from "@/lib/supabase/queries";
+import { publicStorefrontAccent } from "@/lib/storefront-accent";
 
 type HomeLatestProductsProps = {
   products: HomeProductCard[];
@@ -18,6 +19,7 @@ export function HomeLatestProducts({
   title = "Adicionados recentemente",
   description = "Veja os produtos mais novos que chegaram na loja",
 }: HomeLatestProductsProps) {
+  const ac = publicStorefrontAccent();
   if (!products.length) return null;
 
   return (
@@ -34,7 +36,7 @@ export function HomeLatestProducts({
         </div>
         <Link
           href="/catalogo"
-          className="hidden rounded-full bg-green-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition hover:bg-green-500 sm:inline-flex"
+          className={ac.homeLatestBtn}
         >
           Ver todos os produtos
         </Link>
@@ -54,7 +56,7 @@ export function HomeLatestProducts({
             <Link
               key={product.id}
               href={`/produto/${product.id}`}
-              className="group w-[46vw] min-w-[168px] flex-none overflow-hidden rounded-xl border border-zinc-200/70 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:ring-1 hover:ring-green-300/50 sm:w-[250px] sm:min-w-[250px] lg:w-[270px] lg:min-w-[270px]"
+              className={`group w-[46vw] min-w-[168px] flex-none overflow-hidden rounded-xl border border-zinc-200/70 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:ring-1 ${ac.homeLatestRing} sm:w-[250px] sm:min-w-[250px] lg:w-[270px] lg:min-w-[270px]`}
             >
               <div className="aspect-square overflow-hidden bg-zinc-100">
                 {product.imageUrl ? (
@@ -89,11 +91,11 @@ export function HomeLatestProducts({
                   </p>
                 )}
                 {formatPrice(product.price) && (
-                  <p className="mt-2 text-base font-bold text-green-600 sm:text-lg">
+                  <p className={ac.homeLatestPrice}>
                     {formatPrice(product.price)}
                   </p>
                 )}
-                <span className="mt-2 inline-flex text-xs font-semibold text-zinc-700 transition group-hover:text-green-600">
+                <span className={ac.homeLatestSeeAll}>
                   Ver produto
                 </span>
               </div>
@@ -105,7 +107,7 @@ export function HomeLatestProducts({
       <div className="mt-5 flex justify-center sm:hidden">
         <Link
           href="/catalogo"
-          className="inline-flex rounded-full bg-green-600 px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-green-500"
+          className={ac.homeLatestBtnMobile}
         >
           Ver todos os produtos
         </Link>

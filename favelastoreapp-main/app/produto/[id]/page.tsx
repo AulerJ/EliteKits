@@ -11,6 +11,9 @@ import { CustomOrderCta } from "@/components/CustomOrderCta";
 import { ProductImageGallery } from "@/components/ProductImageGallery";
 import type { Metadata } from "next";
 import { siteDisplayName } from "@/lib/site-brand";
+import { publicStorefrontAccent } from "@/lib/storefront-accent";
+
+export const dynamic = "force-dynamic";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://favelastore.com";
 
@@ -51,6 +54,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function ProdutoPage({ params }: PageProps) {
+  const ac = publicStorefrontAccent();
   const { id } = await params;
   const product = await getProductById(id);
   const [otherInCategory, categorySlugPath] =
@@ -67,7 +71,7 @@ export default async function ProdutoPage({ params }: PageProps) {
       <main className="min-h-screen px-4 py-16">
         <div className="mx-auto max-w-lg rounded-2xl border border-zinc-200 bg-white p-8 text-center">
           <h1 className="text-xl font-bold text-zinc-900">Produto não encontrado</h1>
-          <Link href="/" className="mt-6 inline-block rounded-xl bg-green-600 px-5 py-2.5 font-medium text-white hover:bg-green-500">
+          <Link href="/" className={`mt-6 inline-block ${ac.btnSolidRounded}`}>
             Ver catálogo
           </Link>
         </div>
@@ -122,7 +126,7 @@ export default async function ProdutoPage({ params }: PageProps) {
               <p className="mt-2 text-zinc-600">{product.description}</p>
             )}
             {product.price != null && (
-              <p className="mt-3 text-2xl font-bold text-green-600">US$ {Number(product.price).toFixed(2)}</p>
+              <p className={`mt-3 ${ac.priceLg}`}>US$ {Number(product.price).toFixed(2)}</p>
             )}
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
               {product.shopifyProductUrl && (
@@ -173,7 +177,7 @@ export default async function ProdutoPage({ params }: PageProps) {
                 <Link
                   key={p.id}
                   href={`/produto/${p.id}`}
-                  className="flex w-36 flex-shrink-0 flex-col overflow-hidden rounded-xl bg-white shadow-md ring-1 ring-zinc-200/60 transition hover:ring-green-300/50"
+                  className={`flex w-36 flex-shrink-0 flex-col overflow-hidden rounded-xl bg-white shadow-md ring-1 ring-zinc-200/60 transition ${ac.ringCard}`}
                 >
                   <div className="relative aspect-square bg-zinc-100">
                     {p.imageUrl ? (
@@ -198,7 +202,7 @@ export default async function ProdutoPage({ params }: PageProps) {
                       <p className="mt-0.5 text-[10px] font-medium text-zinc-600">{(p.stock ?? 1)} unidades</p>
                     )}
                     {p.price != null && (
-                      <p className="mt-0.5 text-sm font-bold text-green-600">
+                      <p className={ac.priceSmBold}>
                         US$ {Number(p.price).toFixed(2)}
                       </p>
                     )}
@@ -210,7 +214,7 @@ export default async function ProdutoPage({ params }: PageProps) {
               <div className="mt-4 flex justify-center">
                 <Link
                   href={`/catalogo/${categorySlugPath.join("/")}`}
-                  className="inline-flex items-center gap-2 rounded-xl border-2 border-green-600 bg-white px-5 py-2.5 text-sm font-semibold text-green-600 transition hover:bg-green-50"
+                  className={ac.outlineBtn}
                 >
                   Ver todos em {product.categoryName ?? "esta categoria"}
                 </Link>

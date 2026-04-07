@@ -1,8 +1,10 @@
 "use client";
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { publicStorefrontAccent } from "@/lib/storefront-accent";
 
 export function ProductSortSelector() {
+  const ac = publicStorefrontAccent();
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -24,7 +26,7 @@ export function ProductSortSelector() {
       <select
         value={currentSort}
         onChange={(e) => handleSortChange(e.target.value)}
-        className="rounded-lg border border-zinc-200 bg-zinc-50/80 px-2.5 py-1.5 text-xs font-medium text-zinc-700 transition focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20 sm:text-sm"
+        className={ac.sortSelect}
       >
         <option value="padrao">Padrão</option>
         <option value="preco">Menor preço</option>

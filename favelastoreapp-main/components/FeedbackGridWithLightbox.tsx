@@ -3,12 +3,14 @@
 import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { publicStorefrontAccent } from "@/lib/storefront-accent";
 
 type FeedbackGridWithLightboxProps = {
   images: string[];
 };
 
 export function FeedbackGridWithLightbox({ images }: FeedbackGridWithLightboxProps) {
+  const ac = publicStorefrontAccent();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [touchStart, setTouchStart] = useState<number | null>(null);
 
@@ -45,7 +47,7 @@ export function FeedbackGridWithLightbox({ images }: FeedbackGridWithLightboxPro
             key={`${image}-${index}`}
             type="button"
             onClick={() => setOpenIndex(index)}
-            className="relative aspect-square overflow-hidden rounded-xl border border-zinc-200 bg-zinc-100 shadow-md transition hover:ring-2 hover:ring-green-400 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className={ac.feedbackLightboxRing}
           >
             <Image
               src={image}

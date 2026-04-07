@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useCatalogSearch } from "./CatalogSearchContext";
+import { publicStorefrontAccent } from "@/lib/storefront-accent";
 
 function slugifySize(s: string): string {
   return s.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
@@ -44,6 +45,7 @@ export function CategorySizeLinks({
   sizes,
   currentTamanho,
 }: CategorySizeLinksProps) {
+  const ac = publicStorefrontAccent();
   const searchParams = useSearchParams();
   const { searchQuery } = useCatalogSearch();
 
@@ -62,9 +64,7 @@ export function CategorySizeLinks({
         ? "bg-sky-600 text-white shadow-md ring-2 ring-sky-500/30"
         : "bg-sky-100 text-sky-800 shadow-sm ring-1 ring-sky-200/60 hover:bg-sky-200 hover:ring-sky-300";
     }
-    return selected
-      ? "bg-green-600 text-white shadow-md ring-2 ring-green-500/30"
-      : "bg-white text-zinc-600 shadow-sm ring-1 ring-zinc-200/60 hover:bg-green-50 hover:text-green-700 hover:ring-green-200";
+    return selected ? ac.pillActive : ac.pillInactive;
   };
 
   return (

@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { siteDisplayName } from "@/lib/site-brand";
+import { publicStorefrontAccent } from "@/lib/storefront-accent";
 
 interface FeedbackWhatsAppCtaProps {
   whatsappNumber: string;
@@ -7,6 +7,7 @@ interface FeedbackWhatsAppCtaProps {
 }
 
 export function FeedbackWhatsAppCta({ whatsappNumber, className = "" }: FeedbackWhatsAppCtaProps) {
+  const ac = publicStorefrontAccent();
   const brand = siteDisplayName();
   const feedbackMessage = `Olá! Comprei na ${brand} e adorei! Envio aqui minha foto de feedback para vocês publicarem no site. Obrigado(a) pelo atendimento!`;
   const cleanNumber = whatsappNumber.replace(/\D/g, "") || "5511999999999";
@@ -14,7 +15,7 @@ export function FeedbackWhatsAppCta({ whatsappNumber, className = "" }: Feedback
 
   return (
     <div
-      className={`rounded-2xl border-2 border-green-200 bg-gradient-to-br from-green-50 to-white p-6 text-center shadow-sm sm:p-8 ${className}`}
+      className={`${ac.feedbackBox} ${className}`}
     >
       <p className="text-lg font-semibold text-zinc-900">
         Gostou da sua compra? Envie seu feedback!

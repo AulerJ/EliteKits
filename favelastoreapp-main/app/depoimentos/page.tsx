@@ -3,6 +3,7 @@ import { getHomeReviewImages } from "@/lib/supabase/queries";
 import { FeedbackGridWithLightbox } from "@/components/FeedbackGridWithLightbox";
 import { FeedbackWhatsAppCta } from "@/components/FeedbackWhatsAppCta";
 import { siteDisplayName } from "@/lib/site-brand";
+import { publicStorefrontAccent } from "@/lib/storefront-accent";
 
 export const revalidate = 180;
 
@@ -13,6 +14,7 @@ export const metadata = {
 };
 
 export default async function DepoimentosPage() {
+  const ac = publicStorefrontAccent();
   const images = await getHomeReviewImages();
   const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/\D/g, "") || "5511999999999";
 
@@ -38,7 +40,7 @@ export default async function DepoimentosPage() {
         <div className="rounded-2xl border-2 border-dashed border-zinc-200 bg-zinc-50/50 p-12 text-center">
           <p className="text-zinc-600">Ainda não há depoimentos publicados.</p>
           <FeedbackWhatsAppCta whatsappNumber={whatsappNumber} className="mt-8" />
-          <Link href="/" className="mt-6 inline-block text-green-600 hover:underline">
+          <Link href="/" className={ac.depoimentosLink}>
             Voltar à home
           </Link>
         </div>

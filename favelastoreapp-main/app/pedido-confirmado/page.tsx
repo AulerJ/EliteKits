@@ -3,6 +3,7 @@ import Image from "next/image";
 import { CheckCircle2, MessageCircle, Package, User, MapPin } from "lucide-react";
 import { stripeServer } from "@/lib/stripe-server";
 import { siteDisplayName } from "@/lib/site-brand";
+import { publicStorefrontAccent } from "@/lib/storefront-accent";
 
 export const dynamic = "force-dynamic";
 
@@ -77,6 +78,7 @@ function getProductSize(product: unknown): string | null {
 }
 
 export default async function PedidoConfirmadoPage({ searchParams }: Props) {
+  const ac = publicStorefrontAccent();
   const brand = siteDisplayName();
   const params = await searchParams;
   const sessionId = params.session_id ?? "";
@@ -156,19 +158,19 @@ export default async function PedidoConfirmadoPage({ searchParams }: Props) {
   return (
     <main className="min-h-screen bg-zinc-50 px-4 py-12">
       <div className="mx-auto max-w-lg rounded-2xl border border-zinc-200 bg-white shadow-sm overflow-hidden">
-        <div className="bg-green-600 px-6 py-6 text-center text-white">
+        <div className={ac.pedidoHeader}>
           <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-white/20">
             <CheckCircle2 className="h-8 w-8" aria-hidden />
           </div>
           <h1 className="text-2xl font-bold">Compra confirmada!</h1>
-          <p className="mt-1 text-green-100">
+          <p className={ac.pedidoSub}>
             {hasStripeData ? "Obrigado pelo seu pedido." : "Obrigado! Seu pagamento foi processado na Shopify."}
           </p>
           {sessionId && hasStripeData && (
-            <p className="mt-2 text-sm font-mono text-green-200">Pedido #{sessionId.replace("cs_test_", "").slice(0, 12)}…</p>
+            <p className={ac.pedidoMono}>Pedido #{sessionId.replace("cs_test_", "").slice(0, 12)}…</p>
           )}
           {!hasStripeData && (
-            <p className="mt-2 text-sm text-green-100">Confira o email de confirmação da Shopify.</p>
+            <p className={ac.pedidoNote}>Confira o email de confirmação da Shopify.</p>
           )}
         </div>
 
@@ -245,7 +247,7 @@ export default async function PedidoConfirmadoPage({ searchParams }: Props) {
               {totalPaid > 0 && (
                 <div className="flex justify-between items-center border-t border-zinc-200 pt-3 mt-1">
                   <span className="font-semibold text-zinc-900">Total pago</span>
-                  <span className="text-lg font-bold text-green-600">{formatMoney(totalPaid, currency)}</span>
+                  <span className={ac.pedidoTotal}>{formatMoney(totalPaid, currency)}</span>
                 </div>
               )}
             </div>
@@ -260,7 +262,7 @@ export default async function PedidoConfirmadoPage({ searchParams }: Props) {
             href={waUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-green-600 px-5 py-3.5 font-semibold text-white transition hover:bg-green-500"
+            className={ac.pedidoWhatsApp}
           >
             <MessageCircle className="h-5 w-5" aria-hidden />
             Enviar no WhatsApp

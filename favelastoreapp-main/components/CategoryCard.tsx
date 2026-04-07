@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { publicStorefrontAccent } from "@/lib/storefront-accent";
 
 interface CategoryCardProps {
   name: string;
@@ -10,10 +11,11 @@ interface CategoryCardProps {
 }
 
 export function CategoryCard({ name, slug, image }: CategoryCardProps) {
+  const ac = publicStorefrontAccent();
   return (
     <Link
       href={`/catalogo/${slug}`}
-      className="group block overflow-hidden rounded-[1.2rem] border border-zinc-200/80 bg-white shadow-[0_12px_35px_-20px_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-green-300/70 hover:shadow-xl"
+      className={`group block overflow-hidden rounded-[1.2rem] border border-zinc-200/80 bg-white shadow-[0_12px_35px_-20px_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-1 ${ac.categoryCardBorder} hover:shadow-xl`}
     >
       <div className="relative aspect-[4/5] overflow-hidden bg-zinc-200">
         <Image

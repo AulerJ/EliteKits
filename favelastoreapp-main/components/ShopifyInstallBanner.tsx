@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { publicStorefrontAccent } from "@/lib/storefront-accent";
 
 /**
  * Quando a Shopify redireciona para o site após instalar o app (URL com shop= e hmac=),
  * mostra um aviso breve e opcionalmente limpa a URL.
  */
 export function ShopifyInstallBanner() {
+  const ac = publicStorefrontAccent();
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -25,7 +27,7 @@ export function ShopifyInstallBanner() {
   if (!show) return null;
 
   return (
-    <div className="bg-green-700 px-4 py-2 text-center text-sm text-white">
+    <div className={ac.shopifyBanner}>
       <span>
         App Shopify instalado com sucesso. Pegue o token em dev.shopify.com → Favela Store Checkout → Settings → API credentials.
       </span>

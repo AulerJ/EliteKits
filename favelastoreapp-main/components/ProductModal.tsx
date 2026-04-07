@@ -5,6 +5,7 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight, X, Share2, ShoppingCart } from "lucide-react";
 import { useCart } from "./CartContext";
 import { siteDisplayName } from "@/lib/site-brand";
+import { publicStorefrontAccent } from "@/lib/storefront-accent";
 
 export interface ProductForModal {
   id: string;
@@ -34,6 +35,7 @@ export function ProductModal({
   onPrevProduct,
   onNextProduct,
 }: ProductModalProps) {
+  const ac = publicStorefrontAccent();
   const { addItem } = useCart();
   const productIndex = allProducts.findIndex((p) => p.id === product.id);
   const currentProduct = allProducts[Math.max(0, productIndex)] ?? product;
@@ -360,7 +362,7 @@ export function ProductModal({
               )}
             </div>
             {currentProduct.price != null && (
-              <p className="text-2xl font-bold text-green-600">
+              <p className={ac.priceLg}>
                 US$ {Number(currentProduct.price).toFixed(2)}
               </p>
             )}
@@ -385,7 +387,7 @@ export function ProductModal({
                 );
                 onClose();
               }}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-green-600 py-3.5 font-semibold text-white shadow-lg shadow-green-600/25 transition hover:bg-green-500"
+              className={ac.productModalBtn}
             >
               <ShoppingCart className="h-5 w-5 shrink-0" />
               Adicionar ao carrinho

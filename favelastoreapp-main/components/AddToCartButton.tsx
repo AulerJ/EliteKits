@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "./CartContext";
+import { publicStorefrontAccent } from "@/lib/storefront-accent";
 
 interface AddToCartButtonProps {
   productId: string;
@@ -22,6 +23,7 @@ export function AddToCartButton({
   size,
   stock,
 }: AddToCartButtonProps) {
+  const ac = publicStorefrontAccent();
   const { addItem, items } = useCart();
   const canSelectQty = (stock ?? 1) > 1;
   const [qty, setQty] = useState(1);
@@ -59,7 +61,7 @@ export function AddToCartButton({
             max={stock ?? 999}
             value={qty}
             onChange={(e) => setQty(Math.max(1, Math.min(stock ?? 999, parseInt(e.target.value, 10) || 1)))}
-            className="h-10 w-14 rounded-lg border border-zinc-300 px-2 text-center text-sm font-medium focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
+            className={`h-10 w-14 rounded-lg border border-zinc-300 px-2 text-center text-sm font-medium ${ac.focusInput}`}
           />
         </div>
       )}
@@ -70,7 +72,7 @@ export function AddToCartButton({
         className={`inline-flex flex-1 min-w-0 items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition sm:flex-initial sm:px-5 ${
           alreadyAtMax
             ? "cursor-not-allowed bg-zinc-300 text-zinc-500"
-            : "bg-green-600 text-white hover:bg-green-500"
+            : ac.addToCartMain
         }`}
       >
         <ShoppingCart className="h-4 w-4 shrink-0" />

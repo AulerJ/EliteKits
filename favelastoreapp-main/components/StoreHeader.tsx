@@ -14,6 +14,13 @@ import { siteDisplayName } from "@/lib/site-brand";
 
 const LOGO_SRC = process.env.NEXT_PUBLIC_LOGO_URL || "/logo.png";
 const SITE_NAME = siteDisplayName();
+/** Vitrine secundária (ex.: EliteKits): UI com acentos ciano em vez de verde. */
+const eliteKits = Boolean(process.env.NEXT_PUBLIC_STORE_SLUG?.trim());
+const accentBtn = eliteKits ? "bg-cyan-600 hover:bg-cyan-500" : "bg-green-600 hover:bg-green-500";
+const accentRing = eliteKits ? "ring-cyan-500/70" : "ring-green-500/70";
+const accentFocus = eliteKits
+  ? "focus:border-cyan-500 focus:ring-cyan-500/50"
+  : "focus:border-green-500 focus:ring-green-500/50";
 const igHandle = process.env.NEXT_PUBLIC_INSTAGRAM_USERNAME?.replace(/^@/, "").trim();
 const INSTAGRAM_URL = igHandle
   ? `https://www.instagram.com/${igHandle}/`
@@ -130,7 +137,13 @@ export function StoreHeader() {
   const isInCatalog = pathname.startsWith("/catalogo");
 
   return (
-    <header className="sticky top-0 z-40 border-b border-black bg-black">
+    <header
+      className={
+        eliteKits
+          ? "sticky top-0 z-40 border-b border-cyan-900/50 bg-slate-950"
+          : "sticky top-0 z-40 border-b border-black bg-black"
+      }
+    >
       <div className="mx-auto max-w-6xl px-3 sm:px-5">
         {/* Linha 1: mobile = [hamburger | logo | carrinho]; desktop = [logo | busca no meio | nav + carrinho]. Busca some dentro de categoria. */}
         <div className="flex h-16 items-center justify-between gap-3 sm:h-20 sm:gap-4">
@@ -174,11 +187,11 @@ export function StoreHeader() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Buscar produto..."
                 minLength={2}
-                className="w-full rounded-full border border-zinc-700 bg-zinc-900 py-2 pl-9 pr-20 text-sm text-white placeholder:text-zinc-500 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500/50"
+                className={`w-full rounded-full border border-zinc-700 bg-zinc-900 py-2 pl-9 pr-20 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-1 ${accentFocus}`}
               />
               <button
                 type="submit"
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-green-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-500"
+                className={`absolute right-2 top-1/2 -translate-y-1/2 rounded-full px-3 py-1.5 text-xs font-semibold text-white ${accentBtn}`}
               >
                 Buscar
               </button>
@@ -211,13 +224,17 @@ export function StoreHeader() {
             <Link
               href="/carrinho"
               className={`relative inline-flex items-center justify-center rounded-full p-2 text-zinc-100 transition hover:bg-zinc-900 ${
-                isActive("/carrinho") ? "ring-2 ring-green-500/70" : ""
+                isActive("/carrinho") ? `ring-2 ${accentRing}` : ""
               }`}
               aria-label="Abrir carrinho"
             >
               <ShoppingCart className="h-5 w-5" />
               {totalItems > 0 && (
-                <span className="absolute -right-0.5 -top-0.5 inline-flex min-w-[1.1rem] items-center justify-center rounded-full bg-green-500 px-0.5 py-px text-[10px] font-bold text-white">
+                <span
+                  className={`absolute -right-0.5 -top-0.5 inline-flex min-w-[1.1rem] items-center justify-center rounded-full px-0.5 py-px text-[10px] font-bold text-white ${
+                    eliteKits ? "bg-cyan-500" : "bg-green-500"
+                  }`}
+                >
                   {totalItems}
                 </span>
               )}
@@ -229,13 +246,17 @@ export function StoreHeader() {
             <Link
               href="/carrinho"
               className={`relative inline-flex items-center justify-center rounded-full p-2 text-zinc-100 transition hover:bg-zinc-900 ${
-                isActive("/carrinho") ? "ring-2 ring-green-500/70" : ""
+                isActive("/carrinho") ? `ring-2 ${accentRing}` : ""
               }`}
               aria-label="Abrir carrinho"
             >
               <ShoppingCart className="h-5 w-5" />
               {totalItems > 0 && (
-                <span className="absolute -right-0.5 -top-0.5 inline-flex min-w-[1.1rem] items-center justify-center rounded-full bg-green-500 px-0.5 py-px text-[10px] font-bold text-white">
+                <span
+                  className={`absolute -right-0.5 -top-0.5 inline-flex min-w-[1.1rem] items-center justify-center rounded-full px-0.5 py-px text-[10px] font-bold text-white ${
+                    eliteKits ? "bg-cyan-500" : "bg-green-500"
+                  }`}
+                >
                   {totalItems}
                 </span>
               )}
@@ -322,11 +343,11 @@ export function StoreHeader() {
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar produto..."
               minLength={2}
-              className="w-full rounded-full border border-zinc-700 bg-zinc-900 py-2 pl-9 pr-16 text-sm text-white placeholder:text-zinc-500 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500/50"
+              className={`w-full rounded-full border border-zinc-700 bg-zinc-900 py-2 pl-9 pr-16 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-1 ${accentFocus}`}
             />
             <button
               type="submit"
-              className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full bg-green-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-green-500"
+              className={`absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full px-2.5 py-1 text-xs font-semibold text-white ${accentBtn}`}
             >
               Buscar
             </button>

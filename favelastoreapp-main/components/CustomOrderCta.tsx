@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { publicStorefrontAccent } from "@/lib/storefront-accent";
 
 const WHATSAPP_MESSAGE = "Olá! Gostaria de fazer uma encomenda ou personalizar um produto.";
 
@@ -14,6 +15,7 @@ export function CustomOrderCta({
   variant = "box",
   className = "",
 }: CustomOrderCtaProps) {
+  const ac = publicStorefrontAccent();
   const cleanNumber = whatsappNumber.replace(/\D/g, "") || "5511999999999";
   const whatsappUrl = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
 
@@ -25,7 +27,7 @@ export function CustomOrderCta({
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-semibold text-green-600 underline decoration-green-600/50 underline-offset-2 hover:text-green-700"
+          className={ac.customOrderLink}
         >
           Fale conosco agora
         </a>
@@ -36,7 +38,7 @@ export function CustomOrderCta({
 
   return (
     <div
-      className={`rounded-2xl border-2 border-green-200 bg-gradient-to-br from-green-50 to-white p-6 text-center shadow-sm sm:p-8 ${className}`}
+      className={`${ac.customOrderBox} ${className}`}
     >
       <p className="text-lg font-semibold text-zinc-900">
         Não encontrou o que estava procurando?

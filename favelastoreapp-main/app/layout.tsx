@@ -6,6 +6,7 @@ import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { ShopifyInstallBanner } from "@/components/ShopifyInstallBanner";
 import { Providers } from "./providers";
 import { siteDisplayName } from "@/lib/site-brand";
+import { isSecondaryStorefront } from "@/lib/store";
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans" });
 
@@ -55,9 +56,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const secondary = isSecondaryStorefront();
   return (
-    <html lang="pt-BR" className={dmSans.variable}>
-      <body className="min-h-screen bg-zinc-50 font-sans text-zinc-900 antialiased">
+    <html lang="pt-BR" className={dmSans.variable} data-storefront={secondary ? "elite" : "default"}>
+      <body
+        className={
+          secondary
+            ? "min-h-screen bg-slate-100 font-sans text-slate-900 antialiased"
+            : "min-h-screen bg-zinc-50 font-sans text-zinc-900 antialiased"
+        }
+      >
         <Providers>
           <StoreHeader />
           <ShopifyInstallBanner />

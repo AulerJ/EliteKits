@@ -8,6 +8,7 @@ import { Search, X, ShoppingCart } from "lucide-react";
 import { useCatalogSearch } from "./CatalogSearchContext";
 import { ProductSortSelector } from "./ProductSortSelector";
 import { useCart } from "./CartContext";
+import { publicStorefrontAccent } from "@/lib/storefront-accent";
 
 export interface CatalogProduct {
   id: string;
@@ -107,6 +108,7 @@ export function CatalogProductGrid({
   totalCount,
   countLabel,
 }: CatalogProductGridProps) {
+  const ac = publicStorefrontAccent();
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -166,7 +168,7 @@ export function CatalogProductGrid({
             placeholder="Buscar por nome ou descrição..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-lg border border-zinc-200 bg-zinc-50/50 py-2 pl-9 pr-9 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-green-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-green-500/20"
+            className={`w-full rounded-lg border border-zinc-200 bg-zinc-50/50 py-2 pl-9 pr-9 text-sm text-zinc-900 placeholder:text-zinc-400 ${ac.focusInputRing2}`}
           />
           {searchQuery && (
             <button
@@ -191,7 +193,7 @@ export function CatalogProductGrid({
                     <button
                       type="button"
                       onClick={() => setSearchQuery(didYouMean)}
-                      className="font-semibold text-green-600 underline decoration-green-600/50 underline-offset-2 hover:text-green-700 hover:decoration-green-700"
+                      className={ac.linkStrong}
                     >
                       {didYouMean}
                     </button>
@@ -209,7 +211,7 @@ export function CatalogProductGrid({
                     <button
                       type="button"
                       onClick={() => setSearchQuery(didYouMean)}
-                      className="font-semibold text-green-600 underline decoration-green-600/50 underline-offset-2 hover:text-green-700 hover:decoration-green-700"
+                      className={ac.linkStrong}
                     >
                       {didYouMean}
                     </button>
@@ -245,7 +247,7 @@ export function CatalogProductGrid({
             <Link
               key={p.id}
               href={`/produto/${p.id}`}
-              className="group flex w-full flex-col overflow-hidden rounded-xl bg-white text-left shadow-md ring-1 ring-zinc-200/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:ring-green-300/50"
+              className={`group flex w-full flex-col overflow-hidden rounded-xl bg-white text-left shadow-md ring-1 ring-zinc-200/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${ac.ringCard}`}
             >
               <div className="aspect-square overflow-hidden bg-zinc-50">
                 {firstImg ? (
@@ -285,7 +287,7 @@ export function CatalogProductGrid({
                     </p>
                   )}
                   {p.price != null && (
-                    <span className={`mt-auto inline-block text-lg font-bold text-green-600 ${p.name?.trim() || p.description || p.size ? "mt-3" : ""}`}>
+                    <span className={`mt-auto inline-block ${ac.priceLgSpan} ${p.name?.trim() || p.description || p.size ? "mt-3" : ""}`}>
                       US$ {Number(p.price).toFixed(2)}
                     </span>
                   )}
@@ -293,7 +295,7 @@ export function CatalogProductGrid({
                     <button
                       type="button"
                       onClick={handleAddToCart}
-                      className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-green-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-green-500"
+                      className={ac.addToCartGrid}
                     >
                       <ShoppingCart className="h-4 w-4" />
                       <span>Adicionar</span>

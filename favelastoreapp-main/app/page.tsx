@@ -13,14 +13,17 @@ import {
   getHomeLatestProducts,
 } from "@/lib/supabase/queries";
 import { HomeFooter } from "@/components/HomeFooter";
+import { isSecondaryStorefront } from "@/lib/store";
 
-export const revalidate = 180;
+/** Sem ISR: vitrine secundária depende de product_store_listings; cache atrasava produtos após salvar no admin. */
+export const dynamic = "force-dynamic";
 
 const INSTAGRAM_URL = "https://www.instagram.com/favela_store_usa";
 const INSTAGRAM_USERNAME = "favela_store_usa";
 const INSTAGRAM_EMBED_SRC = "https://www.instagram.com/favela_store_usa/embed/";
 
 export default async function HomePage() {
+  const secondary = isSecondaryStorefront();
   const [categories, heroImages, homeReviewImages, homeConfig] = await Promise.all([
     getCategories(),
     getHeroImages(),
@@ -44,10 +47,12 @@ export default async function HomePage() {
       >
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-zinc-900 sm:text-3xl">
-            Todos os produtos
+            {secondary ? "Explorar categorias" : "Todos os produtos"}
           </h2>
           <p className="mt-1 text-zinc-600">
-            Escolha uma categoria para ver os produtos
+            {secondary
+              ? "Curadoria EliteKits — só o que foi publicado na sua vitrine aparece aqui"
+              : "Escolha uma categoria para ver os produtos"}
           </p>
         </div>
         <HomeCategoriesCarousel

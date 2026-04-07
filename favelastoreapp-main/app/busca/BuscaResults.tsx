@@ -8,6 +8,7 @@ import { ShoppingCart, Trash2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useCart } from "@/components/CartContext";
 import type { SearchProduct } from "@/lib/supabase/queries";
+import { publicStorefrontAccent } from "@/lib/storefront-accent";
 
 export function BuscaResults({
   camisaProducts,
@@ -31,6 +32,7 @@ export function BuscaResults({
   /** Existe camisa na busca (antes do filtro), para mostrar a barra mesmo em "Outros produtos" */
   hasCamisaResults?: boolean;
 }) {
+  const ac = publicStorefrontAccent();
   const router = useRouter();
   const { addItem } = useCart();
 
@@ -75,9 +77,7 @@ export function BuscaResults({
         ? "bg-sky-600 text-white shadow-md ring-2 ring-sky-500/30"
         : "bg-sky-100 text-sky-800 shadow-sm ring-1 ring-sky-200/60 hover:bg-sky-200 hover:ring-sky-300";
     }
-    return selected
-      ? "bg-green-600 text-white shadow-md ring-2 ring-green-500/30"
-      : "bg-white text-zinc-600 shadow-sm ring-1 ring-zinc-200/60 hover:bg-green-50 hover:text-green-700 hover:ring-green-200";
+    return selected ? ac.pillActive : ac.pillInactive;
   };
 
   const hasCamisas = camisaProducts.length > 0;
@@ -97,9 +97,7 @@ export function BuscaResults({
                 <Link
                   href={query()}
                   className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition-all ${
-                    !currentTamanho
-                      ? "bg-green-600 text-white shadow-md ring-2 ring-green-500/30"
-                      : "bg-white text-zinc-600 shadow-sm ring-1 ring-zinc-200/60 hover:bg-green-50 hover:text-green-700 hover:ring-green-200"
+                    !currentTamanho ? ac.pillActive : ac.pillInactive
                   }`}
                 >
                   Todos
@@ -120,9 +118,7 @@ export function BuscaResults({
             <Link
               href={query("outros")}
               className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition-all ${
-                currentNorm === "outros"
-                  ? "bg-green-600 text-white shadow-md ring-2 ring-green-500/30"
-                  : "bg-white text-zinc-600 shadow-sm ring-1 ring-zinc-200/60 hover:bg-green-50 hover:text-green-700 hover:ring-green-200"
+                currentNorm === "outros" ? ac.pillActive : ac.pillInactive
               }`}
             >
               Outros produtos
@@ -174,7 +170,7 @@ export function BuscaResults({
           </Link>
           <div className="flex flex-1 flex-col p-3">
             <Link href={`/produto/${p.id}`} className="group">
-              <p className="line-clamp-2 font-semibold text-zinc-900 group-hover:text-green-600">
+              <p className={`line-clamp-2 font-semibold text-zinc-900 ${ac.groupHoverTitle}`}>
                 {p.name?.trim() && !p.name.match(/^produto\s*-?\s*\d+$/i)
                   ? p.name
                   : p.id}
@@ -190,7 +186,7 @@ export function BuscaResults({
                 Tamanho: {p.size}
               </p>
             )}
-            <p className={`mt-0.5 text-sm font-semibold ${p.price != null ? "text-green-600" : "text-zinc-600"}`}>
+            <p className={`mt-0.5 text-sm font-semibold ${p.price != null ? ac.price : "text-zinc-600"}`}>
               {p.price != null
                 ? `US$ ${Number(p.price).toFixed(2)}`
                 : "Sem preço"}
@@ -211,7 +207,7 @@ export function BuscaResults({
                     p.stock ?? null
                   );
                 }}
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-green-500 min-w-0"
+                className={`${ac.buscaGridBtn} min-w-0`}
               >
                 <ShoppingCart className="h-4 w-4 shrink-0" />
                 Adicionar ao carrinho
@@ -266,7 +262,7 @@ export function BuscaResults({
                 </Link>
                 <div className="flex flex-1 flex-col p-3">
                   <Link href={`/produto/${p.id}`} className="group">
-                    <p className="line-clamp-2 font-semibold text-zinc-900 group-hover:text-green-600">
+                    <p className={`line-clamp-2 font-semibold text-zinc-900 ${ac.groupHoverTitle}`}>
                       {p.name?.trim() && !p.name.match(/^produto\s*-?\s*\d+$/i) ? p.name : p.id}
                     </p>
                   </Link>
@@ -278,7 +274,7 @@ export function BuscaResults({
                   {p.showSize && p.size != null && String(p.size).trim() !== "" && (
                     <p className="mt-0.5 text-sm font-semibold text-zinc-700">Tamanho: {p.size}</p>
                   )}
-                  <p className={`mt-0.5 text-sm font-semibold ${p.price != null ? "text-green-600" : "text-zinc-600"}`}>
+                  <p className={`mt-0.5 text-sm font-semibold ${p.price != null ? ac.price : "text-zinc-600"}`}>
                     {p.price != null ? `US$ ${Number(p.price).toFixed(2)}` : "Sem preço"}
                   </p>
                   <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -297,7 +293,7 @@ export function BuscaResults({
                           p.stock ?? null
                         );
                       }}
-                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-green-500 min-w-0"
+                      className={`${ac.buscaGridBtn} min-w-0`}
                     >
                       <ShoppingCart className="h-4 w-4 shrink-0" />
                       Adicionar ao carrinho

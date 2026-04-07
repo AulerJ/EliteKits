@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createServiceRoleClient } from "@/lib/supabase/server";
 import { STORE_SLUG_ELITE_KITS } from "@/lib/store";
 
 export async function saveEliteKitsStoreListing(formData: FormData) {
@@ -28,7 +28,9 @@ export async function saveEliteKitsStoreListing(formData: FormData) {
     }
   }
 
-  const { error } = await supabase
+  // Service role evita falhas de RLS/sessão no upsert; ainda exige usuário logado acima.
+  const db = createServiceRoleClient() ?? supabase;
+  const { error } = await db
     .schema("favelastore")
     .from("product_store_listings")
     .upsert(
@@ -47,5 +49,9 @@ export async function saveEliteKitsStoreListing(formData: FormData) {
 
   revalidatePath("/admin/elite-kits");
   revalidatePath("/", "layout");
+  revalidatePath("/", "page");
   revalidatePath("/catalogo", "layout");
+  revalidatePath("/catalogo", "page");
+  revalidatePath("/busca");
+  revalidatePath("/produto", "layout");
 }

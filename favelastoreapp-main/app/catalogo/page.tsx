@@ -1,11 +1,13 @@
 import { CategoryCard } from "@/components/CategoryCard";
 import { CustomOrderCta } from "@/components/CustomOrderCta";
 import { getCategories } from "@/lib/supabase/queries";
+import { isSecondaryStorefront } from "@/lib/store";
 
-export const revalidate = 180;
+export const dynamic = "force-dynamic";
 
 export default async function CatalogoPage() {
   const categories = await getCategories();
+  const secondary = isSecondaryStorefront();
   const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/\D/g, "") || "5511999999999";
 
   return (
@@ -16,7 +18,9 @@ export default async function CatalogoPage() {
             Cat&aacute;logo
           </h1>
           <p className="mt-2 text-zinc-600">
-            Escolha uma categoria para ver todos os produtos
+            {secondary
+              ? "Categorias da vitrine EliteKits — em cada uma, só entram itens que você aprovou no admin"
+              : "Escolha uma categoria para ver todos os produtos"}
           </p>
           <CustomOrderCta whatsappNumber={whatsappNumber} variant="inline" className="mt-3" />
         </div>

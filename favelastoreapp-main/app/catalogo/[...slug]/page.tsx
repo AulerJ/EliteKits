@@ -10,6 +10,7 @@ import { CatalogSearchProvider } from "@/components/CatalogSearchContext";
 import { CategorySizeLinks } from "@/components/CategorySizeLinks";
 import { CustomOrderCta } from "@/components/CustomOrderCta";
 import { siteDisplayName } from "@/lib/site-brand";
+import { publicStorefrontAccent } from "@/lib/storefront-accent";
 
 /** Sempre buscar dados no servidor; evita cache estático com categoria/produtos vazios. */
 export const dynamic = "force-dynamic";
@@ -95,7 +96,8 @@ function buildCategoryQuery(params: { tamanho?: string; ordenar?: string; busca?
 export default async function CategoriaPage({ params, searchParams }: PageProps) {
   const { slug: segments } = await params;
   const { tamanho, ordenar, busca } = await searchParams;
-  
+  const ac = publicStorefrontAccent();
+
   // Validar ordenação: "preco", "data", ou padrão (sort_order)
   const orderBy = ordenar === "preco" ? "price" : ordenar === "data" ? "created_at" : "sort_order";
 
@@ -110,7 +112,7 @@ export default async function CategoriaPage({ params, searchParams }: PageProps)
             <p className="mt-2 text-zinc-500">A categoria que você procura não existe ou foi removida.</p>
             <Link
               href="/"
-              className="mt-6 inline-block rounded-xl bg-green-600 px-5 py-2.5 font-medium text-white transition hover:bg-green-500"
+              className={`mt-6 inline-block ${ac.btnSolidRounded}`}
             >
               Voltar ao catálogo
             </Link>
@@ -136,7 +138,7 @@ export default async function CategoriaPage({ params, searchParams }: PageProps)
     const isInf = n.includes("infantil") || n.includes("criança") || n.includes("crianca") || s.includes("infantil") || s.includes("crianca");
     if (isFem) return { icon: "text-pink-600", bg: "bg-pink-50", border: "hover:border-pink-300" };
     if (isInf) return { icon: "text-sky-600", bg: "bg-sky-50", border: "hover:border-sky-300" };
-    return { icon: "text-amber-500", bg: "bg-amber-50/50", border: "hover:border-green-300" };
+    return { icon: "text-amber-500", bg: "bg-amber-50/50", border: ac.subcategoryBorderDefault };
   }
 
   return (
@@ -157,7 +159,7 @@ export default async function CategoriaPage({ params, searchParams }: PageProps)
                 href={`/catalogo/${segments.slice(0, i + 1).join("/")}`}
                 className={`rounded-lg px-3 py-2 capitalize transition ${
                   i === segments.length - 1
-                    ? "font-medium text-green-700"
+                    ? ac.breadcrumbCurrent
                     : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"
                 }`}
               >
@@ -192,9 +194,7 @@ export default async function CategoriaPage({ params, searchParams }: PageProps)
                   ? "bg-sky-600 text-white shadow-md ring-2 ring-sky-500/30"
                   : "bg-sky-100 text-sky-800 shadow-sm ring-1 ring-sky-200/60 hover:bg-sky-200 hover:ring-sky-300";
               } else {
-                btnClass = isCurrent
-                  ? "bg-green-600 text-white shadow-md ring-2 ring-green-500/30"
-                  : "bg-white text-zinc-600 shadow-sm ring-1 ring-zinc-200/60 hover:bg-green-50 hover:text-green-700 hover:ring-green-200";
+                btnClass = isCurrent ? ac.siblingDefaultActive : ac.siblingDefaultInactive;
               }
               return (
                 <Link
@@ -232,7 +232,7 @@ export default async function CategoriaPage({ params, searchParams }: PageProps)
                     ? "hover:border-pink-300"
                     : theme.border === "hover:border-sky-300"
                       ? "hover:border-sky-300"
-                      : "hover:border-green-300";
+                      : ac.subcategoryBorderDefault;
                 return (
                   <Link
                     key={child.id}
@@ -246,7 +246,7 @@ export default async function CategoriaPage({ params, searchParams }: PageProps)
                         <Folder className={iconClass} />
                       )}
                     </span>
-                    <span className="font-semibold text-zinc-800 group-hover:text-green-600">{child.name}</span>
+                    <span className={`font-semibold text-zinc-800 ${ac.groupHoverTitle}`}>{child.name}</span>
                   </Link>
                 );
               })}
@@ -256,8 +256,8 @@ export default async function CategoriaPage({ params, searchParams }: PageProps)
 
         {sizes.length > 0 && !tamanho && children.length === 0 && siblings.length === 0 && (
           <div className="mt-10">
-            <div className="rounded-2xl border border-green-200/60 bg-gradient-to-br from-green-500/10 via-white to-amber-500/5 p-8 shadow-sm sm:p-10">
-              <p className="mb-2 text-center text-base font-medium uppercase tracking-wider text-green-700/90">
+            <div className={ac.gradientSizeWrap}>
+              <p className={ac.gradientSizeTitle}>
                 Qual seu tamanho?
               </p>
               <p className="mb-8 text-center text-zinc-600">
@@ -268,9 +268,9 @@ export default async function CategoriaPage({ params, searchParams }: PageProps)
                   <Link
                     key={s}
                     href={`${basePath}${buildCategoryQuery({ tamanho: s, ordenar, busca })}`}
-                    className="group flex flex-col items-center justify-center rounded-2xl bg-white py-6 text-lg font-bold text-zinc-800 shadow-md ring-1 ring-zinc-200/80 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:ring-green-400/50 hover:ring-2"
+                    className={ac.sizeTile}
                   >
-                    <span className="group-hover:text-green-600">{s}</span>
+                    <span className={ac.sizeTileSpan}>{s}</span>
                   </Link>
                 ))}
               </div>
@@ -312,7 +312,7 @@ export default async function CategoriaPage({ params, searchParams }: PageProps)
                     <p className="text-zinc-600">
                       {tamanho ? `Nenhum produto no tamanho ${tamanho} no momento.` : "Nenhum produto nesta categoria."}
                     </p>
-                    <Link href="/" className="mt-4 inline-block rounded-xl bg-green-600 px-5 py-2.5 font-medium text-white transition hover:bg-green-500">
+                    <Link href="/" className={`mt-4 inline-block ${ac.btnSolidRounded}`}>
                       Ver outras categorias
                     </Link>
                   </div>
